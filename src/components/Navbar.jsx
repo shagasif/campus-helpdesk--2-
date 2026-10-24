@@ -7,9 +7,7 @@ const TABS = [
   { id: 'admin', label: 'Admin Dashboard', icon: 'grid' },
 ]
 
-export default function Navbar({ activeTab, setActiveTab, pendingCount, theme, toggleTheme }) {
-  const nextTheme = theme === 'dark' ? 'light' : 'dark'
-
+export default function Navbar({ activeTab, setActiveTab, pendingCount, theme, onThemeChange }) {
   return (
     <header className="navbar-header">
       <div className="navbar-container">
@@ -54,15 +52,26 @@ export default function Navbar({ activeTab, setActiveTab, pendingCount, theme, t
         </nav>
 
         <div className="navbar-actions">
-          <button
-            type="button"
-            className="theme-toggle-btn"
-            onClick={toggleTheme}
-            aria-label={`Switch to ${nextTheme} mode`}
-            title={`Switch to ${nextTheme} mode`}
-          >
-            <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
-          </button>
+          <div className="theme-toggle-group" role="group" aria-label="Color theme">
+            <button
+              type="button"
+              className={`theme-option-btn ${theme === 'light' ? 'active' : ''}`}
+              onClick={() => onThemeChange('light')}
+              aria-pressed={theme === 'light'}
+            >
+              <Icon name="sun" />
+              <span>Light Mode</span>
+            </button>
+            <button
+              type="button"
+              className={`theme-option-btn ${theme === 'dark' ? 'active' : ''}`}
+              onClick={() => onThemeChange('dark')}
+              aria-pressed={theme === 'dark'}
+            >
+              <Icon name="moon" />
+              <span>Dark Mode</span>
+            </button>
+          </div>
         </div>
       </div>
     </header>

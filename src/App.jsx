@@ -33,11 +33,11 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const toggleTheme = () => {
-    const next = theme === 'dark' ? 'light' : 'dark'
-    setTheme(next)
-    saveTheme(next)
-    showToast(`Switched to ${next === 'dark' ? 'Dark' : 'Light'} theme`, 'info')
+  const handleThemeChange = (nextTheme) => {
+    if (nextTheme === theme) return
+    setTheme(nextTheme)
+    saveTheme(nextTheme)
+    showToast(`Switched to ${nextTheme === 'dark' ? 'Dark' : 'Light'} theme`, 'info')
   }
 
   const handleTicketCreated = (ticket) => {
@@ -74,7 +74,7 @@ export default function App() {
 
   return (
     <div className="campus-app-layout">
-      <Navbar activeTab={activeTab} setActiveTab={goToTab} pendingCount={pendingCount} theme={theme} toggleTheme={toggleTheme} />
+      <Navbar activeTab={activeTab} setActiveTab={goToTab} pendingCount={pendingCount} theme={theme} onThemeChange={handleThemeChange} />
 
       <main className="campus-main-content">
         {activeTab === 'submit' && (
