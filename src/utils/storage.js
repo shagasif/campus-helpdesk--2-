@@ -19,7 +19,7 @@ export function getTickets() {
   } catch (err) {
     console.error('Failed to read tickets from localStorage:', err)
   }
-  return resetTickets()
+  return resetTickets() || createDefaultTickets()
 }
 
 export function saveTickets(tickets) {
@@ -86,26 +86,26 @@ export function updateTicketStatus(id, status, note = '', assignedTo) {
       history: [...(t.history || []), entry],
     }
   })
-  saveTickets(updated)
+  if (!saveTickets(updated)) return null
   return updated
 }
 
 export function updateTicket(id, changes) {
   const now = new Date().toISOString()
   const updated = getTickets().map((t) => (t.id === id ? { ...t, ...changes, updatedAt: now } : t))
-  saveTickets(updated)
+  if (!saveTickets(updated)) return null
   return updated
 }
 
 export function deleteTicket(id) {
   const updated = getTickets().filter((t) => t.id !== id)
-  saveTickets(updated)
+  if (!saveTickets(updated)) return null
   return updated
 }
 
 export function resetTickets() {
   const defaults = createDefaultTickets()
-  saveTickets(defaults)
+  if (!saveTickets(defaults)) return null
   return defaults
 }
 

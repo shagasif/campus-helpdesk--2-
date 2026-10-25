@@ -40,8 +40,7 @@ export default function TicketDetailModal({ ticket, onClose, isAdmin = false, on
   const handleStatus = (next) => {
     if (next === ticket.status) return
     // Only attach a note to the history entry if the admin actually edited it.
-    onStatusChange(ticket.id, next, dirty ? notes : '', assignee)
-    setDirty(false)
+    if (onStatusChange(ticket.id, next, dirty ? notes : '', assignee)) setDirty(false)
   }
 
   const cancelEdits = () => {
@@ -51,8 +50,7 @@ export default function TicketDetailModal({ ticket, onClose, isAdmin = false, on
   }
 
   const saveEdits = () => {
-    onUpdateTicket(ticket.id, { adminNotes: notes, assignedTo: assignee })
-    setDirty(false)
+    if (onUpdateTicket(ticket.id, { adminNotes: notes, assignedTo: assignee })) setDirty(false)
   }
 
   return (
@@ -218,7 +216,7 @@ export default function TicketDetailModal({ ticket, onClose, isAdmin = false, on
               {confirmDelete ? (
                 <div className="delete-confirm-group">
                   <span className="delete-confirm-text">Permanently delete this ticket?</span>
-                  <button type="button" className="btn btn-danger btn-sm" onClick={() => { onDelete(ticket.id); onClose() }}>Confirm Delete</button>
+                  <button type="button" className="btn btn-danger btn-sm" onClick={() => { if (onDelete(ticket.id)) onClose() }}>Confirm Delete</button>
                   <button type="button" className="btn btn-secondary btn-sm" onClick={() => setConfirmDelete(false)}>Cancel</button>
                 </div>
               ) : (

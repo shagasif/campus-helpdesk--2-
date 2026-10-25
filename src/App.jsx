@@ -46,23 +46,46 @@ export default function App() {
   }
 
   const handleStatusChange = (id, status, note = '', assignedTo) => {
-    setTickets(updateTicketStatus(id, status, note, assignedTo))
+    const updated = updateTicketStatus(id, status, note, assignedTo)
+    if (!updated) {
+      showToast('Could not save ticket changes. Please try again.', 'warning')
+      return false
+    }
+    setTickets(updated)
     showToast(`Ticket ${id} status updated to ${status}`, 'success')
+    return true
   }
 
   const handleUpdateTicket = (id, changes) => {
-    setTickets(updateTicket(id, changes))
+    const updated = updateTicket(id, changes)
+    if (!updated) {
+      showToast('Could not save ticket changes. Please try again.', 'warning')
+      return false
+    }
+    setTickets(updated)
     showToast(`Ticket ${id} updated`, 'info')
+    return true
   }
 
   const handleDeleteTicket = (id) => {
-    setTickets(deleteTicket(id))
+    const updated = deleteTicket(id)
+    if (!updated) {
+      showToast('Could not delete the ticket. Please try again.', 'warning')
+      return false
+    }
+    setTickets(updated)
     showToast(`Ticket ${id} deleted`, 'warning')
+    return true
   }
 
   const handleRefreshTickets = (next) => {
+    if (!next) {
+      showToast('Could not restore demo data. Please try again.', 'warning')
+      return false
+    }
     setTickets(next)
     showToast('Demo data successfully restored', 'info')
+    return true
   }
 
   const handleNavigateToTrack = (id) => {

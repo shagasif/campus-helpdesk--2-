@@ -216,7 +216,11 @@ export default function AdminDashboard({ tickets, onStatusChange, onDeleteTicket
           isAdmin
           onClose={() => setSelectedId(null)}
           onStatusChange={onStatusChange}
-          onDelete={(id) => { onDeleteTicket(id); setSelectedId(null) }}
+          onDelete={(id) => {
+            const deleted = onDeleteTicket(id)
+            if (deleted) setSelectedId(null)
+            return deleted
+          }}
           onUpdateTicket={onUpdateTicket}
         />
       )}
