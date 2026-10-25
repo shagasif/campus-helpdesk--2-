@@ -37,6 +37,7 @@ function validate(form) {
 export default function SubmitTicketForm({ onTicketCreated, onNavigateToTrack }) {
   const [form, setForm] = useState(INITIAL_FORM)
   const [errors, setErrors] = useState({})
+  const [submissionError, setSubmissionError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [created, setCreated] = useState(null)
   const [copied, setCopied] = useState(false)
@@ -50,6 +51,7 @@ export default function SubmitTicketForm({ onTicketCreated, onNavigateToTrack })
   const handleChange = (e) => {
     const { name, value } = e.target
     setForm((f) => ({ ...f, [name]: value }))
+    setSubmissionError('')
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: null }))
   }
 
@@ -64,6 +66,10 @@ export default function SubmitTicketForm({ onTicketCreated, onNavigateToTrack })
       setTimeout(() => {
         const ticket = createTicket(form)
         setSubmitting(false)
+        if (!ticket) {
+          setSubmissionError('We could not save your ticket. Please try again.')
+          return
+        }
         setCreated(ticket)
         onTicketCreated?.(ticket)
       }, 350),
@@ -81,6 +87,7 @@ export default function SubmitTicketForm({ onTicketCreated, onNavigateToTrack })
   const resetForm = () => {
     setForm(INITIAL_FORM)
     setErrors({})
+    setSubmissionError('')
     setCreated(null)
   }
 
@@ -167,6 +174,7 @@ export default function SubmitTicketForm({ onTicketCreated, onNavigateToTrack })
         </div>
 
         <form onSubmit={handleSubmit} className="ticket-form" noValidate>
+          {submissionError && <p className="error-text" role="alert">{submissionError}</p>}
           <div className="form-section-title">
             <Icon name="user" />
             <span>1. Submitter Information</span>

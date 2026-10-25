@@ -65,7 +65,7 @@ export function createTicket(data) {
     adminNotes: '',
     history: [{ status: 'Pending', timestamp: now, note: `Issue submitted by ${name || 'user'}` }],
   }
-  saveTickets([ticket, ...tickets])
+  if (!saveTickets([ticket, ...tickets])) return null
   return ticket
 }
 
