@@ -2,13 +2,14 @@ import { useMemo, useState } from 'react'
 import Icon from './Icon'
 import StatsOverview from './StatsOverview'
 import TicketDetailModal from './TicketDetailModal'
+import AIAgentActivity from './AIAgentActivity'
 import { CATEGORIES, PRIORITIES, STATUSES } from '../data/mockData'
-import { exportJSON, resetTickets } from '../utils/storage'
+import { exportJSON } from '../utils/storage'
 import { formatDate, getPriorityClass, getStatusStyle, timeAgo } from '../utils/helpers'
 
-const PRIORITY_RANK = { Urgent: 4, High: 3, Medium: 2, Low: 1 }
+const PRIORITY_RANK = { Critical: 4, High: 3, Medium: 2, Low: 1 }
 
-export default function AdminDashboard({ tickets, onStatusChange, onDeleteTicket, onUpdateTicket, onRefreshTickets, onOpenSubmit }) {
+export default function AdminDashboard({ tickets, workflows = [], onStatusChange, onDeleteTicket, onUpdateTicket, onRefreshTickets, onOpenSubmit }) {
   const [selectedId, setSelectedId] = useState(null)
   const [search, setSearch] = useState('')
   const [statusFilter, setStatusFilter] = useState('All')
@@ -57,12 +58,6 @@ export default function AdminDashboard({ tickets, onStatusChange, onDeleteTicket
     setCategoryFilter('All')
   }
 
-  const handleReset = () => {
-    if (window.confirm('Reset all tickets back to default campus demo data? Any custom tickets will be replaced.')) {
-      onRefreshTickets(resetTickets())
-    }
-  }
-
   const pills = [
     { value: 'All', label: 'All Tickets', count: counts.all, cls: '' },
     { value: 'Pending', label: 'Pending', count: counts.pending, cls: 'pill-pending' },
@@ -87,8 +82,8 @@ export default function AdminDashboard({ tickets, onStatusChange, onDeleteTicket
           <button type="button" className="btn btn-outline" onClick={() => exportJSON(tickets)} title="Download all tickets as JSON file">
             <Icon name="download" />Export JSON
           </button>
-          <button type="button" className="btn btn-outline" onClick={handleReset} title="Restore sample campus tickets">
-            <Icon name="reset" />Reset Demo Data
+          <button type="button" className="btn btn-outline" onClick={onRefreshTickets} title="Refresh tickets from the helpdesk server">
+            <Icon name="reset" />Refresh Tickets
           </button>
           <button type="button" className="btn btn-primary" onClick={onOpenSubmit}>
             <Icon name="plus" />New Incident
@@ -96,6 +91,7 @@ export default function AdminDashboard({ tickets, onStatusChange, onDeleteTicket
         </div>
       </div>
 
+      <AIAgentActivity workflows={workflows} />
       <StatsOverview tickets={tickets} />
 
       <div className="table-container-card">
@@ -179,7 +175,7 @@ export default function AdminDashboard({ tickets, onStatusChange, onDeleteTicket
                       <td className="cell-status" onClick={(e) => e.stopPropagation()}>
                         <div className="status-cell-wrapper">
                           <select className="status-dropdown-select" value={t.status} aria-label={`Status for ${t.id}`}
-                            onChange={(e) => onStatusChange(t.id, e.target.value)}
+                            onChange={(e) => { void onStatusChange(t.id, e.target.value) }}
                             style={{ backgroundColor: st.bg, color: st.color, borderColor: st.borderColor }}>
                             {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
                           </select>
@@ -195,7 +191,7 @@ export default function AdminDashboard({ tickets, onStatusChange, onDeleteTicket
                             <Icon name="eye" />
                           </button>
                           <button type="button" className="btn-icon btn-icon-delete" title="Delete ticket" aria-label={`Delete ${t.id}`}
-                            onClick={() => { if (window.confirm(`Delete ticket ${t.id}?`)) onDeleteTicket(t.id) }}>
+                            onClick={() => { if (window.confirm(`Delete ticket ${t.id}?`)) void onDeleteTicket(t.id) }}>
                             <Icon name="trash" />
                           </button>
                         </div>
@@ -216,8 +212,8 @@ export default function AdminDashboard({ tickets, onStatusChange, onDeleteTicket
           isAdmin
           onClose={() => setSelectedId(null)}
           onStatusChange={onStatusChange}
-          onDelete={(id) => {
-            const deleted = onDeleteTicket(id)
+          onDelete={async (id) => {
+            const deleted = await onDeleteTicket(id)
             if (deleted) setSelectedId(null)
             return deleted
           }}

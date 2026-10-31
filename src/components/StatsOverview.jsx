@@ -8,8 +8,7 @@ export default function StatsOverview({ tickets = [] }) {
   const pending = tickets.filter((t) => t.status === 'Pending').length
   const inProgress = tickets.filter((t) => t.status === 'In Progress').length
   const resolved = tickets.filter((t) => t.status === 'Resolved').length
-  const urgent = tickets.filter((t) => t.priority === 'Urgent').length
-  const critical = urgent + tickets.filter((t) => t.priority === 'High').length
+  const critical = tickets.filter((t) => t.priority === 'Critical' || t.priority === 'High').length
   const pendingPct = pct(pending, total)
   const progressPct = pct(inProgress, total)
   const resolvedPct = pct(resolved, total)
@@ -70,7 +69,6 @@ export default function StatsOverview({ tickets = [] }) {
             <div className="alert-icon"><Icon name="warning" /></div>
             <div className="alert-text">
               <strong>{critical} Critical / High Priority</strong> issues recorded.
-              {urgent > 0 && ` (${urgent} marked Urgent).`}
             </div>
           </div>
         </div>

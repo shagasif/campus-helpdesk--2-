@@ -41,7 +41,7 @@ export function getStatusStyle(status) {
 
 export function getPriorityClass(priority) {
   switch (priority) {
-    case 'Urgent': return 'priority-urgent'
+    case 'Critical': return 'priority-critical'
     case 'High': return 'priority-high'
     case 'Low': return 'priority-low'
     default: return 'priority-medium'

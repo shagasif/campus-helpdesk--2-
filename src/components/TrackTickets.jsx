@@ -37,11 +37,11 @@ export default function TrackTickets({ tickets, initialTicketId = '', onNavigate
     <div className="track-tickets-container">
       <div className="section-hero-card">
         <div className="hero-text-col">
-          <div className="hero-pill"><span className="pulsing-dot" />Public Ticket Tracker</div>
+          <div className="hero-pill"><span className="pulsing-dot" />My Ticket Tracker</div>
           <h1 className="hero-title">Track Campus Issue Progress</h1>
           <p className="hero-description">
-            Search for your ticket by Reference ID (e.g. <code>TICK-1042</code>) or campus email to see live status
-            updates, assigned technicians, and resolution notes.
+            Search your own complaints by reference ID (e.g. <code>TICK-1042</code>) or title to see status updates,
+            assigned technicians, and staff notes.
           </p>
         </div>
         <div className="hero-stats-quick">
@@ -53,7 +53,7 @@ export default function TrackTickets({ tickets, initialTicketId = '', onNavigate
         <div className="track-search-row">
           <div className="track-search-input-box">
             <Icon name="search" />
-            <input type="text" placeholder="Search by Ticket ID (e.g. TICK-1042) or your email address..."
+            <input type="text" placeholder="Search your Ticket ID (e.g. TICK-1042) or title..."
               aria-label="Search tickets" value={query} onChange={(e) => setQuery(e.target.value)} className="track-input" />
             {query && (
               <button type="button" className="clear-search-btn" onClick={() => setQuery('')} aria-label="Clear search">×</button>
@@ -90,7 +90,7 @@ export default function TrackTickets({ tickets, initialTicketId = '', onNavigate
           <div className="empty-state-card">
             <div className="empty-state-icon"><Icon name="minusCircle" strokeWidth={1.5} /></div>
             <h3>No tickets found matching your query</h3>
-            <p>Check the ticket reference number (e.g. <code>TICK-1042</code>) or your email address.</p>
+            <p>Check the ticket reference number (e.g. <code>TICK-1042</code>) or issue title.</p>
             <button type="button" className="btn btn-secondary btn-sm" style={{ marginTop: '12px' }}
               onClick={() => { setQuery(''); setStatusFilter('All') }}>
               Show all tickets

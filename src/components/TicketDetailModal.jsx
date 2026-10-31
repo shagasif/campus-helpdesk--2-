@@ -37,10 +37,10 @@ export default function TicketDetailModal({ ticket, onClose, isAdmin = false, on
     }
   }
 
-  const handleStatus = (next) => {
+  const handleStatus = async (next) => {
     if (next === ticket.status) return
     // Only attach a note to the history entry if the admin actually edited it.
-    if (onStatusChange(ticket.id, next, dirty ? notes : '', assignee)) setDirty(false)
+    if (await onStatusChange(ticket.id, next, dirty ? notes : '', assignee)) setDirty(false)
   }
 
   const cancelEdits = () => {
@@ -49,8 +49,12 @@ export default function TicketDetailModal({ ticket, onClose, isAdmin = false, on
     setDirty(false)
   }
 
-  const saveEdits = () => {
-    if (onUpdateTicket(ticket.id, { adminNotes: notes, assignedTo: assignee })) setDirty(false)
+  const saveEdits = async () => {
+    if (await onUpdateTicket(ticket.id, { adminNotes: notes, assignedTo: assignee })) setDirty(false)
+  }
+
+  const confirmDeleteTicket = async () => {
+    if (await onDelete(ticket.id)) onClose()
   }
 
   return (
@@ -144,7 +148,7 @@ export default function TicketDetailModal({ ticket, onClose, isAdmin = false, on
                     ['In Progress', 'btn-status-progress'],
                     ['Resolved', 'btn-status-resolved'],
                   ].map(([label, cls]) => (
-                    <button key={label} type="button" className={`btn-status-toggle ${cls} ${ticket.status === label ? 'active' : ''}`} onClick={() => handleStatus(label)}>
+                    <button key={label} type="button" className={`btn-status-toggle ${cls} ${ticket.status === label ? 'active' : ''}`} onClick={() => { void handleStatus(label) }}>
                       {label}
                     </button>
                   ))}
@@ -170,7 +174,7 @@ export default function TicketDetailModal({ ticket, onClose, isAdmin = false, on
               {dirty && (
                 <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
                   <button type="button" className="btn btn-secondary btn-sm" onClick={cancelEdits}>Cancel</button>
-                  <button type="button" className="btn btn-primary btn-sm" onClick={saveEdits}>Save Changes</button>
+                  <button type="button" className="btn btn-primary btn-sm" onClick={() => { void saveEdits() }}>Save Changes</button>
                 </div>
               )}
             </div>
@@ -216,7 +220,7 @@ export default function TicketDetailModal({ ticket, onClose, isAdmin = false, on
               {confirmDelete ? (
                 <div className="delete-confirm-group">
                   <span className="delete-confirm-text">Permanently delete this ticket?</span>
-                  <button type="button" className="btn btn-danger btn-sm" onClick={() => { if (onDelete(ticket.id)) onClose() }}>Confirm Delete</button>
+                  <button type="button" className="btn btn-danger btn-sm" onClick={() => { void confirmDeleteTicket() }}>Confirm Delete</button>
                   <button type="button" className="btn btn-secondary btn-sm" onClick={() => setConfirmDelete(false)}>Cancel</button>
                 </div>
               ) : (

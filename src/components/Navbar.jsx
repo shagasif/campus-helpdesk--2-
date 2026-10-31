@@ -7,7 +7,9 @@ const TABS = [
   { id: 'admin', label: 'Admin Dashboard', icon: 'grid' },
 ]
 
-export default function Navbar({ activeTab, setActiveTab, pendingCount, theme, onThemeChange }) {
+export default function Navbar({ activeTab, setActiveTab, pendingCount, theme, onThemeChange, user, onLogout }) {
+  const visibleTabs = TABS.filter((tab) => tab.id !== 'admin' || user?.role === 'admin')
+
   return (
     <header className="navbar-header">
       <div className="navbar-container">
@@ -33,7 +35,7 @@ export default function Navbar({ activeTab, setActiveTab, pendingCount, theme, o
         </div>
 
         <nav className="navbar-nav" aria-label="Main Navigation">
-          {TABS.map((tab) => (
+          {visibleTabs.map((tab) => (
             <button
               key={tab.id}
               type="button"
@@ -52,6 +54,10 @@ export default function Navbar({ activeTab, setActiveTab, pendingCount, theme, o
         </nav>
 
         <div className="navbar-actions">
+          <div className="navbar-user">
+            <span>{user?.name}</span>
+            <button type="button" className="link-button" onClick={onLogout}>Sign out</button>
+          </div>
           <div className="theme-toggle-group" role="group" aria-label="Color theme">
             <button
               type="button"
